@@ -60,6 +60,7 @@
             jobRole: document.getElementById('jobRole'),
             jobLink: document.getElementById('jobLink'),
             jobDate: document.getElementById('jobDate'),
+            jobResume: document.getElementById('jobResume'),
             jobStatus: document.getElementById('jobStatus'),
             jobHr: document.getElementById('jobHr'),
             jobNotes: document.getElementById('jobNotes'),
@@ -198,11 +199,13 @@
                     elements.jobRole.value = data.role || '';
                     elements.jobLink.value = data.link || '';
                     elements.jobDate.value = data.date || today;
+                    elements.jobResume.value = data.resume || '';
                     elements.jobStatus.value = data.status || 'Applied';
                     elements.jobNotes.value = data.notes || '';
                     elements.jobHr.value = data.hrId || '';
                 } else {
                     elements.jobForm.reset();
+                    elements.jobResume.value = '';
                     elements.jobDate.value = today;
                 }
                 
@@ -337,6 +340,7 @@
                 company: elements.jobCompany.value.trim(),
                 role: elements.jobRole.value.trim(),
                 link: elements.jobLink.value.trim(),
+                resume: elements.jobResume.value.trim(),
                 date: elements.jobDate.value,
                 status: elements.jobStatus.value,
                 hrId: elements.jobHr.value || null,
@@ -523,8 +527,9 @@
                             <div class="status-badge status-${job.status.toLowerCase()}">${job.status}</div>
                         </div>
                     </div>
-                    ${job.notes ? `<div class="job-notes">${escapeHtml(job.notes)}</div>` : ''}
-                    ${hr ? `<div style="font-size: 13px; color: var(--muted);">Contact: ${hr.name}</div>` : ''}
+                        ${job.notes ? `<div class="job-notes">${escapeHtml(job.notes)}</div>` : ''}
+                        ${job.resume ? `<div style="font-size: 13px; color: var(--muted);">Resume: ${escapeHtml(job.resume)}</div>` : ''}
+                        ${hr ? `<div style="font-size: 13px; color: var(--muted);">Contact: ${hr.name}</div>` : ''}
                     <div class="job-actions">
                         <button class="btn btn-secondary btn-small" onclick="openModal('step', ${JSON.stringify(job).replace(/"/g, '&quot;')})">
                             Next Step
@@ -627,7 +632,7 @@
                 return;
             }
             
-            const headers = ['Company', 'Role', 'Status', 'Date', 'Link', 'HR Contact', 'Notes'];
+            const headers = ['Company', 'Role', 'Status', 'Date', 'Link', 'Resume', 'HR Contact', 'Notes'];
             const rows = state.jobs.map(job => {
                 const hr = job.hrId ? state.hrs.find(h => h.id === job.hrId) : null;
                 return [
@@ -636,6 +641,7 @@
                     escapeCsv(job.status),
                     escapeCsv(job.date),
                     escapeCsv(job.link),
+                    escapeCsv(job.resume || ''),
                     escapeCsv(hr ? `${hr.name} (${hr.company})` : ''),
                     escapeCsv(job.notes)
                 ];
@@ -806,6 +812,7 @@
                     company: 'TechCorp',
                     role: 'Frontend Developer',
                     link: 'https://techcorp.com/careers',
+                    resume: 'Resume - Frontend',
                     date: new Date().toISOString().split('T')[0],
                     status: 'Applied',
                     hrId: sampleHrs[0].id,
@@ -817,6 +824,7 @@
                     company: 'InnovateLabs',
                     role: 'Full Stack Engineer',
                     link: 'https://innovatelabs.com/jobs',
+                    resume: 'Resume - Fullstack',
                     date: new Date(Date.now() - 86400000).toISOString().split('T')[0],
                     status: 'Interview',
                     hrId: sampleHrs[1].id,
