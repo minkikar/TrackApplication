@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Your Jobs</title>
+   <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="app-title">
+                <div class="logo">TJ</div>
+                <div>
+                    <h1>Track Your Jobs</h1>
+                    <div class="subtitle">Stay organized in your job search</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Total Jobs</div>
+                <div class="stat-value" id="statTotal">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Applied</div>
+                <div class="stat-value" id="statApplied">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Interviews</div>
+                <div class="stat-value" id="statInterview">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Offers</div>
+                <div class="stat-value" id="statOffers">0</div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <input type="text" class="search-box" id="searchInput" placeholder="Search jobs or companies...">
+            <select class="filter-select" id="statusFilter">
+                <option value="all">All Status</option>
+                <option value="Applied">Applied</option>
+                <option value="Test">Online Test</option>
+                <option value="Interview">Interview</option>
+                <option value="Offer">Offer</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+            <button class="btn btn-primary" id="addJobBtn">
+                <span>+ Add Job</span>
+            </button>
+            <button class="btn btn-secondary" id="deleteAllBtn" style="display: none;">
+                <span>🗑️ Delete All</span>
+            </button>
+        </div>
+
+        <!-- Dashboard View -->
+        <div id="dashboardView">
+            <div class="jobs-grid" id="jobsGrid"></div>
+            <div class="empty-state hidden" id="emptyJobs">
+                <div class="empty-state-icon">📋</div>
+                <h3>No jobs yet</h3>
+                <p>Add your first job application to get started</p>
+            </div>
+        </div>
+
+        <!-- HR View -->
+        <div id="hrView" class="hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div>
+                    <h2>HR Contacts</h2>
+                    <div class="subtitle">Manage your recruitment contacts</div>
+                </div>
+                <button class="btn btn-primary" id="addHrBtn">
+                    <span>+ Add Contact</span>
+                </button>
+            </div>
+            <div class="hr-grid" id="hrGrid"></div>
+            <div class="empty-state hidden" id="emptyHR">
+                <div class="empty-state-icon">👥</div>
+                <h3>No contacts yet</h3>
+                <p>Add HR contacts to link with job applications</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Job Modal -->
+    <div class="modal" id="jobModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="jobModalTitle">Add Job</h3>
+            </div>
+            <form id="jobForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Company *</label>
+                        <input type="text" class="form-input" id="jobCompany" placeholder="e.g., Google" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Role *</label>
+                        <input type="text" class="form-input" id="jobRole" placeholder="e.g., Frontend Developer" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Job Link</label>
+                        <input type="url" class="form-input" id="jobLink" placeholder="https://careers.company.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-input" id="jobDate">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" id="jobStatus">
+                        <option value="Applied">Applied</option>
+                        <option value="Test">Online Test</option>
+                        <option value="Interview">Interview</option>
+                        <option value="Offer">Offer</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">HR Contact (Optional)</label>
+                    <select class="form-select" id="jobHr">
+                        <option value="">No HR contact</option>
+                    </select>
+                    <button type="button" class="btn btn-secondary btn-small mt-2" id="showHrForm">
+                        + Add new HR contact
+                    </button>
+                    
+                    <div class="hr-add-form hidden" id="hrAddForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <input type="text" name="newHrName" class="form-input" id="newHrName" placeholder="HR Name *" required disabled>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="newHrCompany" class="form-input" id="newHrCompany" placeholder="Company *" required disabled>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <input type="text" name="newHrRole" class="form-input" id="newHrRole" placeholder="Role (Recruiter)" disabled>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" name="newHrEmail" class="form-input" id="newHrEmail" placeholder="Email (optional)" disabled>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-secondary" id="cancelHrForm">Cancel</button>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary" id="saveNewHr">Add HR</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-textarea" id="jobNotes" placeholder="Interview schedule, feedback, reminders..."></textarea>
+                </div>
+                
+                <div class="modal-actions">
+                    <div>
+                        <button type="button" class="btn btn-secondary" id="deleteJobBtn" style="display: none;">Delete Job</button>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button type="button" class="btn btn-secondary" id="cancelJob">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="saveJobBtn">Save Job</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- HR Modal -->
+    <div class="modal" id="hrModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add HR Contact</h3>
+            </div>
+            <form id="hrForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Name *</label>
+                        <input type="text" class="form-input" id="hrName" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Role</label>
+                        <input type="text" class="form-input" id="hrRole" placeholder="Recruiter">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Company *</label>
+                        <input type="text" class="form-input" id="hrCompany" placeholder="Company Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="hrEmail" placeholder="john@company.com">
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelHr">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Contact</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Next Step Modal -->
+    <div class="modal" id="stepModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Update Status</h3>
+            </div>
+            <form id="stepForm">
+                <div style="display: flex; flex-direction: column; gap: 12px; margin: 20px 0;">
+                    <label style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;">
+                        <input type="radio" name="step" value="Applied">
+                        <div>
+                            <div style="font-weight: 500;">Applied</div>
+                            <div style="font-size: 12px; color: var(--muted);">Initial application submitted</div>
+                        </div>
+                    </label>
+                    
+                    <label style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;">
+                        <input type="radio" name="step" value="Test">
+                        <div>
+                            <div style="font-weight: 500;">Online Test</div>
+                            <div style="font-size: 12px; color: var(--muted);">Assessment or coding test</div>
+                        </div>
+                    </label>
+                    
+                    <label style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;">
+                        <input type="radio" name="step" value="Interview">
+                        <div>
+                            <div style="font-weight: 500;">Interview</div>
+                            <div style="font-size: 12px; color: var(--muted);">Phone, technical, or onsite</div>
+                        </div>
+                    </label>
+                    
+                    <label style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;">
+                        <input type="radio" name="step" value="Offer">
+                        <div>
+                            <div style="font-weight: 500;">Offer</div>
+                            <div style="font-size: 12px; color: var(--muted);">Job offer received</div>
+                        </div>
+                    </label>
+                    
+                    <label style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;">
+                        <input type="radio" name="step" value="Rejected">
+                        <div>
+                            <div style="font-weight: 500;">Rejected</div>
+                            <div style="font-size: 12px; color: var(--muted);">Application not successful</div>
+                        </div>
+                    </label>
+                    
+                    <div style="margin-top: 12px;">
+                        <label class="form-label">Custom Status</label>
+                        <input type="text" class="form-input" id="customStep" placeholder="e.g., Technical Task, Final Round">
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelStep">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Status</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div class="modal confirm-modal" id="confirmModal">
+        <div class="modal-content">
+            <div class="confirm-icon">🗑️</div>
+            <div class="confirm-message" id="confirmMessage">Are you sure you want to delete this item?</div>
+            <div class="confirm-actions">
+                <button class="btn btn-secondary" id="confirmCancel">Cancel</button>
+                <button class="btn btn-danger" id="confirmDelete">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-btn active" data-view="dashboard">
+            <span>📊</span>
+            <span class="nav-label">Jobs</span>
+        </button>
+        <button class="nav-btn" data-view="hr">
+            <span>👥</span>
+            <span class="nav-label">Contacts</span>
+        </button>
+        <button class="nav-btn" id="navAddJob">
+            <span>➕</span>
+            <span class="nav-label">Add</span>
+        </button>
+        <button class="nav-btn" id="navExport">
+            <span>📤</span>
+            <span class="nav-label">Export</span>
+        </button>
+    </nav>
+
+    <!-- FAB -->
+    <button class="fab" id="fabAddJob">+</button>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div>Track Your Jobs v1.0 • Made by Harish</div>
+        <div style="margin-top: 4px; font-size: 12px; color: var(--muted-light);">
+            Your data is stored locally in your browser
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
