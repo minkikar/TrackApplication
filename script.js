@@ -1,5 +1,5 @@
 
-        // ===== APP STATE =====
+      
         const STORAGE_KEY = 'track_your_jobs_data';
         let state = {
             jobs: [],
@@ -11,7 +11,6 @@
         let editingHrId = null;
         let currentView = 'dashboard';
 
-        // ===== DOM ELEMENTS =====
         const elements = {
             // Views
             dashboardView: document.getElementById('dashboardView'),

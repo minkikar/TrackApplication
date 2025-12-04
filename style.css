@@ -33,6 +33,13 @@
             line-height: 1.5;
             padding-bottom: 80px;
         }
+        .gradient-text {
+  background: linear-gradient(90deg, #5ab7ff, #003b73);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
 
         /* ===== TYPOGRAPHY ===== */
         h1, h2, h3, h4 {
@@ -498,7 +505,7 @@
             border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-around;
-            padding: 12px 0;
+            /* padding: 12px 0; */
             z-index: 900;
             box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
         }
@@ -532,7 +539,7 @@
         /* ===== FAB ===== */
         .fab {
             position: fixed;
-            bottom: 80px;
+            bottom: 115px;
             right: 20px;
             width: 56px;
             height: 56px;
@@ -564,14 +571,13 @@
 
         .empty-state-icon {
             font-size: 48px;
-            margin-bottom: 16px;
             opacity: 0.3;
         }
 
         /* ===== FOOTER ===== */
         .footer {
             text-align: center;
-            padding: 24px 0;
+            padding: 49px 0;
             color: var(--muted);
             font-size: 13px;
             border-top: 1px solid var(--border);
